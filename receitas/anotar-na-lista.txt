@@ -1,0 +1,3 @@
+quando: adicione * na lista
+faça: acrescentar lista.txt *
+responda: Anotei * na lista.

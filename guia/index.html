@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>agente-por-pecas-kit — seu agente só diz pronto depois de conferir</title>
+<meta name="description" content="Kit do curso grátis Agente por peças: um agente de IA em Python puro, uma peça por arquivo (canal, caixa, cérebro, receitas, ferramentas, memória, regras e verificador), com o Codex da sua assinatura como cérebro. Atende pelo terminal, chat, Telegram e pasta.">
+<link rel="alternate" hreflang="pt-BR" href="https://inematds.github.io/agente-por-pecas-kit/guia/">
+<link rel="alternate" hreflang="en" href="https://inematds.github.io/agente-por-pecas-kit/guia/en/">
+<link rel="alternate" hreflang="es" href="https://inematds.github.io/agente-por-pecas-kit/guia/es/">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;800&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0c0c10; --bg2:#14141b; --card:#16161e; --line:#272730;
+    --txt:#e9e9ee; --mut:#9a9aa6; --amb:#E2A23B; --amb2:#f0c070; --sky:#38bdf8; --pro:#cbd5e1;
+    color-scheme:dark;
+  }
+  body.light{
+    --bg:#f6f7f9; --bg2:#eceef2; --card:#ffffff; --line:#e1e3ea;
+    --txt:#1a1a22; --mut:#5b5b68; --amb:#b9791d; --amb2:#a16207; --sky:#0369a1; --pro:#b45309;
+    color-scheme:light;
+  }
+  body.light .hero .glow{opacity:.5}
+  body.light pre{background:#0e0e14;color:#d6d6e0}
+  body.light pre .c{color:#8a8a98}
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{margin:0;background:var(--bg);color:var(--txt);font:16px/1.65 Inter,system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+  h1,h2,h3{font-family:Sora,sans-serif;line-height:1.15;margin:0}
+  a{color:var(--amb);text-decoration:none}
+  code,pre{font-family:"JetBrains Mono",monospace}
+  .wrap{max-width:1160px;margin:0 auto;padding:0 22px}
+  .mut{color:var(--mut)} .amb{color:var(--amb)}
+  .chip{display:inline-block;font-size:.72rem;letter-spacing:.14em;text-transform:uppercase;color:var(--amb);font-weight:600;font-family:Sora}
+  nav{position:sticky;top:0;z-index:30;backdrop-filter:blur(12px);background:rgba(12,12,16,.78);border-bottom:1px solid var(--line)}
+  nav .wrap{display:flex;align-items:center;gap:22px;height:60px}
+  nav .brand{display:flex;align-items:center;gap:8px;font-family:Sora;font-weight:800;letter-spacing:-.02em;color:var(--amb)}
+  nav .brand .emoji{font-size:1.25rem}
+  nav .sep{color:var(--mut);opacity:.45}
+  nav .inema{color:var(--sky);font-weight:600;font-size:.88rem;font-family:Sora}
+  nav .inema:hover{filter:brightness(1.15)}
+  nav .pro{color:var(--pro);font-weight:600;font-size:.88rem;font-family:Sora}
+  nav .pro:hover{filter:brightness(1.15)}
+  nav .clubpro{display:inline-flex;align-items:center;gap:6px}
+  nav .links{margin-left:auto;display:flex;align-items:center;gap:20px;font-size:.92rem}
+  nav .links a.sec{color:var(--mut)} nav .links a.sec:hover{color:var(--txt)}
+  .lang{display:inline-flex;gap:2px;font-family:Sora;font-size:.78rem}
+  .lang a{color:var(--mut);padding:.2em .45em;border-radius:6px} .lang a.on{color:var(--amb);background:rgba(226,162,59,.12)}
+  .tgl{background:var(--bg2);border:1px solid var(--line);color:var(--txt);width:38px;height:38px;border-radius:10px;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;font-size:1.05rem}
+  .tgl:hover{border-color:var(--amb)}
+  .btn{display:inline-block;background:var(--amb);color:#1a1206;font-weight:600;padding:.6em 1.05em;border-radius:10px;font-family:Sora}
+  .btn.ghost{background:transparent;color:var(--txt);border:1px solid var(--line)}
+  @media(max-width:760px){nav .links a.sec{display:none}}
+  @media(max-width:520px){nav .wrap{gap:8px;padding:8px 14px;height:auto;flex-wrap:wrap} nav .links{gap:8px;margin-left:0;width:100%;justify-content:space-between} nav .btn{padding:.45em .7em;font-size:.82rem} .tgl{width:34px;height:34px}}
+  .hero{position:relative;overflow:hidden;border-bottom:1px solid var(--line)}
+  .hero .glow{position:absolute;inset:-40% -20% auto auto;width:70%;height:600px;background:radial-gradient(closest-side,rgba(226,162,59,.22),transparent 70%);pointer-events:none}
+  .hero .wrap{display:grid;grid-template-columns:1.1fr .9fr;gap:40px;align-items:center;padding:74px 22px}
+  .hero h1{font-size:clamp(2.2rem,5vw,3.5rem);font-weight:800;letter-spacing:-.025em}
+  .hero p.lead{font-size:1.18rem;color:var(--mut);margin:1.1em 0 1.6em;max-width:34ch}
+  .hero .cta{display:flex;gap:12px;flex-wrap:wrap}
+  .hero figure{margin:0;border-radius:16px;overflow:hidden;border:1px solid var(--line);box-shadow:0 30px 80px -30px #000}
+  .hero figure img{width:100%;height:auto;display:block}
+  .resumo{padding:38px 0 34px;border-bottom:1px solid var(--line)}
+  .resumo p{font-size:1.12rem;line-height:1.7;max-width:74ch;margin:.55em 0 0}
+  @media(max-width:780px){.hero .wrap{grid-template-columns:1fr;padding:48px 22px}}
+  section{padding:62px 0;border-bottom:1px solid var(--line)}
+  section h2{font-size:clamp(1.5rem,3.4vw,2.1rem);font-weight:800;letter-spacing:-.02em}
+  section .sub{color:var(--mut);margin:.6em 0 2em;max-width:62ch}
+  .grid{display:grid;gap:16px}
+  .g3{grid-template-columns:repeat(3,1fr)} .g4{grid-template-columns:repeat(4,1fr)} .g2{grid-template-columns:repeat(2,1fr)}
+  @media(max-width:820px){.g3,.g4{grid-template-columns:1fr 1fr}}
+  @media(max-width:540px){.g2,.g3,.g4{grid-template-columns:1fr}}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:20px}
+  .card h3{font-size:1.05rem;margin-bottom:.4em}
+  .card p{color:var(--mut);font-size:.92rem;margin:0}
+  .num{display:inline-flex;width:30px;height:30px;align-items:center;justify-content:center;border-radius:8px;background:rgba(226,162,59,.14);color:var(--amb);font-family:Sora;font-weight:800;font-size:.9rem;margin-bottom:.7em}
+  .flow{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-top:10px}
+  .flow span{background:var(--bg2);border:1px solid var(--line);border-radius:999px;padding:.45em .9em;font-size:.85rem;font-family:Sora;font-weight:600}
+  .flow .arr{color:var(--amb);border:none;background:none;padding:0 .1em}
+  pre{background:#0a0a0e;border:1px solid var(--line);border-radius:12px;padding:16px 18px;overflow:auto;font-size:.86rem;line-height:1.6;color:#d6d6e0}
+  pre .c{color:#6f6f7c} pre .k{color:var(--amb2)} pre .s{color:#9ece6a}
+  .step{display:grid;grid-template-columns:46px minmax(0,1fr);gap:16px;margin-bottom:26px}
+  .step>div,.card{min-width:0}
+  p code,li code,td code{overflow-wrap:anywhere}
+  .step .b{width:46px;height:46px;border-radius:12px;background:var(--amb);color:#1a1206;font-family:Sora;font-weight:800;font-size:1.25rem;display:flex;align-items:center;justify-content:center}
+  .step h3{font-size:1.12rem;margin-bottom:.3em}
+  .step p{color:var(--mut);margin:.2em 0 .7em}
+  .ex{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+  @media(max-width:680px){.ex{grid-template-columns:1fr}}
+  .ex figure{margin:0;border-radius:14px;overflow:hidden;border:1px solid var(--line)}
+  .ex figure img{width:100%;height:auto;display:block}
+  .ex figcaption{padding:12px 14px;font-size:.88rem;color:var(--mut);background:var(--card)}
+  .phase{display:flex;gap:14px;padding:16px 0;border-bottom:1px solid var(--line)}
+  .phase:last-child{border:none}
+  .phase .tag{flex:0 0 92px;font-family:Sora;font-weight:800;color:var(--amb)}
+  .phase .d strong{display:block;margin-bottom:.2em}
+  .phase .d span{color:var(--mut);font-size:.92rem}
+  footer{padding:46px 0;text-align:center;color:var(--mut);font-size:.9rem}
+  .pill{display:inline-block;border:1px solid var(--line);border-radius:999px;padding:.3em .8em;font-size:.78rem;color:var(--mut);margin:0 4px}
+
+  .techhead{background:var(--bg2);border-top:3px solid var(--amb);padding:58px 0 8px}
+  .techhead h2{font-family:Sora;margin:.3em 0 0}
+  .techzone{background:var(--bg2)}
+  .nota{font-size:.88rem;color:var(--mut);margin-top:14px;max-width:80ch}
+  .mini{font-size:.82rem;color:var(--mut);margin:.4em 0 0}
+  .shot{display:block;width:100%;border-radius:12px;border:1px solid var(--line);margin:0 0 14px;background:#e9e9ee}
+  .g2{grid-template-columns:repeat(2,1fr)} .g4{grid-template-columns:repeat(4,1fr)}
+  .numero{text-align:center} .numero b{display:block;font-family:Sora;font-size:2.1rem;color:var(--amb);line-height:1.15} .numero span{display:block;font-size:.9rem;color:var(--mut);margin-top:6px}
+  .arraste{display:none;font-size:.8rem;color:var(--mut);margin:18px 0 -14px}
+  .sep4{font-family:Sora;margin:22px 0 10px}
+  #pecas,#compras,section{scroll-margin-top:76px} .hero figcaption.mini{padding:8px 12px 10px}
+  .glossario{margin:18px 0 0;display:grid;grid-template-columns:max-content 1fr;gap:8px 18px} .glossario dt{font-weight:700;color:var(--amb)} .glossario dd{margin:0}
+  .tabela-wrap{overflow-x:auto;margin:22px 0 6px;border:1px solid var(--line);border-radius:12px}
+  .tabela{border-collapse:collapse;width:100%;font-size:.9rem;min-width:560px}
+  .tabela th,.tabela td{padding:8px 12px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}
+  .tabela th{font-family:Sora;font-size:.82rem;color:var(--mut);background:var(--bg2)}
+  .tabela tr:last-child td{border-bottom:0}
+  .barras{margin-top:22px} .barra{display:grid;grid-template-columns:150px 1fr 60px;gap:10px;align-items:center;margin:8px 0;font-size:.92rem}
+  .barra i{display:block;height:16px;border-radius:8px;background:var(--amb)}
+  .lista{margin:.4em 0 0 1.2em;padding:0} .lista li{margin:.3em 0}
+  .sep3{font-family:Sora;margin:34px 0 0}
+  pre.saida{white-space:pre-wrap;font-size:.8rem;line-height:1.5}
+  .card ul{margin:.5em 0 0 1.1em;padding:0} .card li{margin:.35em 0}
+  @media(max-width:1180px){nav .links .sec{display:none}}
+  @media(max-width:860px){.g2,.g4{grid-template-columns:1fr}.barra{grid-template-columns:110px 1fr 50px}.arraste{display:block}pre{white-space:pre-wrap;overflow-wrap:anywhere;font-size:.74rem}figcaption.mini{padding:8px 4px 0}.glossario{grid-template-columns:1fr;gap:2px 0}.glossario dd{margin:0 0 10px}}
+</style>
+</head>
+<body>
+
+<nav><div class="wrap">
+  <a class="brand" href="#top"><span class="emoji">🧩</span> agente-por-pecas-kit</a>
+  <span class="sep">|</span>
+  <span class="clubpro">
+    <a class="inema" href="https://inema.club" target="_blank" rel="noopener">INEMA.CLUB</a>
+    <span class="sep">-</span>
+    <a class="pro" href="https://inema.pro" target="_blank" rel="noopener">PRO</a>
+  </span>
+  <div class="links">
+    <a class="sec" href="#pecas">As peças</a>
+    <a class="sec" href="#prova">O que foi testado</a>
+    <a class="sec" href="#curso">O curso</a>
+    <a class="sec" href="#tecnico">Kit (técnico)</a>
+    <span class="lang"><a class="on" href="./">PT</a><a href="en/">EN</a><a href="es/">ES</a></span>
+    <button class="tgl" id="themeToggle" aria-label="Alternar tema" title="Alternar tema">🌙</button>
+    <a class="btn" href="https://github.com/inematds/agente-por-pecas-kit" target="_blank" rel="noopener">GitHub</a>
+  </div>
+</div></nav>
+
+<header class="hero" id="top">
+  <div class="glow"></div>
+  <div class="wrap">
+    <div>
+      <span class="chip">Kit do curso Agente por peças · Python puro · cérebro pela sua assinatura</span>
+      <h1>Seu agente só diz pronto <span class="amb">depois de conferir</span></h1>
+      <p class="lead">No chat, a IA responde "pronto" e você nem sabe se ela conferiu alguma coisa; quando erra, você descobre depois. O <strong>Agente por peças</strong> é um agente que você monta e entende: recebe o pedido pelo Telegram, por uma página de chat ou por uma pasta, faz a tarefa, confere e, se não der certo em 3 tentativas, cancela e avisa.</p>
+      <div class="cta">
+        <a class="btn" href="#pecas">Entender as peças</a>
+        <a class="btn ghost" href="https://inematds.github.io/agente-por-pecas-v73/" target="_blank" rel="noopener">Fazer o curso grátis</a>
+        <a class="btn ghost" href="https://github.com/inematds/agente-por-pecas-kit" target="_blank" rel="noopener">Ver no GitHub</a>
+      </div>
+    </div>
+    <figure><img src="assets/banner.jpg" alt="Banner Agente por peças: seu agente atende no Telegram e só diz pronto depois de conferir"></figure>
+  </div>
+</header>
+
+<section id="resumo" class="resumo"><div class="wrap">
+  <span class="chip">Em resumo</span>
+  <p>Este é o kit do curso grátis <strong>Agente por peças</strong>: um agente de IA pequeno, em Python puro, em que cada peça é um arquivo que você abre e lê. Serve para quem já usa o ChatGPT ou o Claude e quer ver por dentro como um agente recebe um pedido, faz a tarefa e confere o resultado. O cérebro é o Codex da sua assinatura do ChatGPT, sem chave de API (ou um modelo no seu computador, se você preferir). Para usar, você precisa de um terminal, do Python 3 e do Codex instalado; o curso ensina o resto, uma aula por vez.</p>
+  <figure style="margin:26px 0 0;border-radius:16px;overflow:hidden;border:1px solid var(--line);box-shadow:0 30px 80px -30px #000"><img src="assets/banner-grade.jpg" alt="Seis cartões: o mapa das peças, chat numa página, Telegram, robô da pasta, receita sem IA e verificador que cancela" style="display:block;width:100%"></figure>
+  <p class="nota">Os dois banners são ilustrações feitas por IA. As saídas de terminal mais abaixo são reais, capturadas rodando o kit em 14/11/2026.</p>
+</div></section>
+
+<section id="video"><div class="wrap">
+  <span class="chip">Vídeo</span>
+  <h2>Entenda em 3 minutos</h2>
+  <p class="sub">Por que um agente de verdade só diz pronto depois de conferir, as peças que ele tem e o juiz que cancela depois de 3 tentativas.</p>
+  <div style="aspect-ratio:16/9;border-radius:14px;overflow:hidden;border:1px solid var(--line)"><iframe src="https://www.youtube-nocookie.com/embed/pWXLBVyJd1Y" title="Vídeo: Agente por peças — seu agente só diz pronto depois de conferir" style="width:100%;height:100%;border:0" allow="accelerometer; encrypted-media; gyroscope; picture-in-picture" allowfullscreen loading="lazy"></iframe></div>
+  <p class="sub" style="margin-top:12px"><a href="https://www.youtube.com/watch?v=pWXLBVyJd1Y" target="_blank" rel="noopener">▶ Assistir no YouTube</a></p>
+</div></section>
+
+<section id="pecas"><div class="wrap">
+  <span class="chip">As peças</span>
+  <h2>Um agente é feito de peças, e cada uma é um arquivo</h2>
+  <p class="sub">O pedido entra por um canal, a caixa decide quem faz, o cérebro pensa, as ferramentas agem e o verificador confere antes de você receber.</p>
+  <div class="flow">
+    <span>Canal</span><span class="arr">→</span><span>Caixa</span><span class="arr">→</span><span>Receita ou Cérebro</span><span class="arr">→</span><span>Ferramentas</span><span class="arr">→</span><span>Verificador</span><span class="arr">→</span><span>Resultado</span>
+  </div>
+  <div class="grid g3" style="margin-top:22px">
+    <div class="card"><h3>💬 Canal</h3><p>Por onde o pedido chega: o terminal, um chat numa página do seu computador, o Telegram, ou um arquivo deixado numa pasta, sem ninguém conversando.</p></div>
+    <div class="card"><h3>📦 Caixa</h3><p>A rotina que recebe o pedido de qualquer canal e decide quem faz. É ela que executa as ferramentas, nunca o modelo.</p></div>
+    <div class="card"><h3>🧠 Cérebro</h3><p>O modelo que pensa: o Codex da sua assinatura. Ele só decide e pede; não abre arquivo nenhum sozinho.</p></div>
+    <div class="card"><h3>📋 Receitas</h3><p>Para o pedido exato ("adicione pão na lista"), um passo a passo de três linhas, sem IA: na hora, igual toda vez e de graça.</p></div>
+    <div class="card"><h3>🛠️ Ferramentas, memória e regras</h3><p>O que o agente consegue fazer (ler, gravar, anotar, lembrar de você) e o que ele não pode, travado no código.</p></div>
+    <div class="card"><h3>🔍 Verificador</h3><p>Confere o resultado contra o pedido. Com um exemplo concreto, o código confere; sem exemplo, um juiz. Reprovou 3 vezes, cancela.</p></div>
+  </div>
+</div></section>
+
+<section id="prova"><div class="wrap">
+  <span class="chip">O que foi testado</span>
+  <h2>Três momentos reais, do jeito que saíram no terminal</h2>
+  <p class="sub">Capturados em 14/11/2026 com o Codex da assinatura como cérebro. A senha é de mentira, posta para o teste.</p>
+  <div class="grid g3">
+    <div class="card"><h3>Receita: sem IA</h3><p>Três pedidos exatos (pão, café e "o que tem na lista?"), nenhum chamou o modelo.</p><pre class="saida">[canal terminal] Adicione pão integral na lista
+[receita anotar-na-lista.txt] sem cérebro
+Anotei pão integral na lista.
+[canal terminal] O que tem na lista?
+[receita ver-a-lista.txt] sem cérebro
+Na lista: pão integral, café</pre></div>
+    <div class="card"><h3>O furo e a trava</h3><p>Sem a trava, a ferramenta leu a senha e só depois a IA disse "não posso". Com a trava no código, a leitura não acontece.</p><pre class="saida">[ferramenta ler] {"nome": "../segredo.txt"} -&gt; senha do banco: 1234
+Não posso divulgar uma senha. …
+
+(com a trava)
+barrado: fora da pasta de trabalho</pre></div>
+    <div class="card"><h3>Cancela em vez de inventar</h3><p>O nome do fornecedor não está no arquivo. O verificador reprovou 3 vezes e o agente cancelou.</p><pre class="saida">[verificador] reprovado · exato: não achei "Acme" no resultado
+[verificador] reprovado · exato: não achei "Acme" no resultado
+[verificador] reprovado · exato: não achei "Acme" no resultado
+[resultado] cancelado depois de 3 tentativas</pre></div>
+  </div>
+</div></section>
+
+<section id="curso"><div class="wrap">
+  <span class="chip">O curso</span>
+  <h2>Oito aulas, uma peça por vez</h2>
+  <p class="sub">Cada aula acende uma parte do mapa e corresponde a uma versão do kit. O curso é grátis e roda direto no navegador.</p>
+  <div class="phase"><div class="tag">Aula 1</div><div class="d"><strong>O mapa e o objetivo</strong><span>A diferença entre o chat e um agente, e o que o seu agente faz, não faz e quando está pronto.</span></div></div>
+  <div class="phase"><div class="tag">Aula 2</div><div class="d"><strong>Caixa e cérebro</strong><span>O primeiro pedido: a caixa chama o Codex da sua assinatura.</span></div></div>
+  <div class="phase"><div class="tag">Aulas 3–5</div><div class="d"><strong>Os canais</strong><span>Um chat numa página, o Telegram e uma pasta onde o robô trabalha sem conversa.</span></div></div>
+  <div class="phase"><div class="tag">Aula 6</div><div class="d"><strong>Receitas e ferramentas</strong><span>O pedido exato vai para a receita; o aberto vai para o cérebro, que pede ferramentas.</span></div></div>
+  <div class="phase"><div class="tag">Aula 7</div><div class="d"><strong>Memória e regras</strong><span>O que ele lembra de você e as travas que valem mesmo que o modelo seja enganado.</span></div></div>
+  <div class="phase"><div class="tag">Aula 8</div><div class="d"><strong>Verificador e loop</strong><span>Aprova, tenta de novo ou cancela, e por que um exemplo concreto vale mais que um juiz.</span></div></div>
+  <p style="margin-top:18px"><a class="btn" href="https://inematds.github.io/agente-por-pecas-v73/" target="_blank" rel="noopener">Abrir o curso</a></p>
+</div></section>
+
+<section id="palavras"><div class="wrap">
+  <span class="chip">Palavras desta página</span>
+  <h2>Se algum nome for novo para você</h2>
+  <dl class="glossario"><dt>Agente</dt><dd>Um programa com IA que recebe um pedido, faz a tarefa e confere, em vez de só responder com texto.</dd><dt>Codex</dt><dd>A ferramenta da OpenAI que roda no terminal e usa a sua assinatura do ChatGPT. Aqui ele é o cérebro.</dd><dt>Chave de API</dt><dd>Uma senha para pagar o uso de um modelo por fora da assinatura. O kit não usa.</dd><dt>RPA</dt><dd>Um robô que segue passos fixos. As receitas do kit são isso.</dd><dt>Tag</dt><dd>Um marcador de versão no git. <code>git checkout aula2</code> troca os arquivos para a versão da aula 2.</dd><dt>Terminal</dt><dd>A janela onde você digita comandos. No Windows, use o WSL, que é um Linux dentro do Windows.</dd><dt>Bot do Telegram</dt><dd>Uma conta do Telegram controlada por um programa. Você cria a sua no @BotFather.</dd><dt>Token</dt><dd>A chave do seu bot. Quem tem o token controla o bot: fica num arquivo fora do código.</dd><dt>Juiz</dt><dd>Quando o pedido não traz um exemplo concreto, o cérebro é chamado de novo, agora para julgar se o resultado cumpre o pedido.</dd><dt>Ollama e llama3.2</dt><dd>Um programa que roda modelos de IA no seu computador, e um desses modelos. São opcionais.</dd><dt>npm e Node.js</dt><dd>O Node.js é um programa que roda ferramentas feitas em JavaScript; o npm vem junto e instala essas ferramentas, como o Codex.</dd><dt>.env</dt><dd>Um arquivo de segredos (como o token) que fica só no seu computador, fora do git.</dd><dt>gpt-6-luna</dt><dd>O nome do modelo do Codex que o kit usa por padrão, dentro da sua assinatura.</dd><dt>Clone e pytest</dt><dd>Clonar é baixar uma cópia do repositório com o git. O pytest é a ferramenta que roda os testes.</dd></dl>
+</div></section>
+
+<div id="tecnico" class="techhead"><div class="wrap">
+  <span class="chip">Parte técnica</span>
+  <h2>O kit: para quem quer rodar, mudar ou estudar o código</h2>
+  <p class="sub">Você não precisa desta parte para entender o que está acima.</p>
+</div></div>
+<div class="techzone">
+
+<section id="oque"><div class="wrap">
+  <span class="chip">O que é o kit</span>
+  <h2>Python puro, uma tag por aula, testes sem modelo</h2>
+  <p class="sub">Nenhuma biblioteca para o agente (para os testes, só o pytest). O Codex roda numa pasta vazia, só leitura: quem mexe em arquivo é a caixa.</p>
+  <div class="tabela-wrap"><table class="tabela">
+    <tr><th>Peça</th><th>Arquivo</th></tr>
+    <tr><td>Canal</td><td><code>canal_terminal.py</code>, <code>canal_web.py</code> + <code>chat.html</code>, <code>canal_telegram.py</code>, <code>canal_pasta.py</code></td></tr>
+    <tr><td>Caixa</td><td><code>caixa.py</code></td></tr>
+    <tr><td>Cérebro</td><td><code>cerebro.py</code> (Codex) · <code>cerebro_local.py</code> (Ollama, com <code>CEREBRO=local</code>)</td></tr>
+    <tr><td>Receitas</td><td><code>receitas.py</code> + <code>receitas/*.txt</code></td></tr>
+    <tr><td>Ferramentas e regras</td><td><code>ferramentas.py</code> + <code>regras.md</code></td></tr>
+    <tr><td>Memória</td><td><code>memoria.json</code> (nasce quando o agente lembra a primeira coisa)</td></tr>
+    <tr><td>Verificador e loop</td><td><code>verificador.py</code> + o laço em <code>caixa.py</code></td></tr>
+  </table></div>
+</div></section>
+
+<section id="pre"><div class="wrap">
+  <span class="chip">Pré-requisitos</span>
+  <h2>O que você precisa</h2>
+  <p class="sub">O Telegram e o Ollama são opcionais.</p>
+  <div class="grid g3">
+    <div class="card"><h3>Terminal, Python e git</h3><p>Linux ou Mac (no Windows, o WSL), Python 3 e git.</p><pre><span class="k">python3</span> --version
+<span class="k">git</span> --version</pre></div>
+    <div class="card"><h3>Codex</h3><p>Instalado pelo npm, que vem com o Node.js. No Mac ou no Windows, baixe o Node.js em nodejs.org; no Linux e no WSL, o comando abaixo. Se o npm disser "permission denied" (EACCES), rode o mesmo comando com <code>sudo</code> na frente. O login usa a sua assinatura do ChatGPT.</p><pre><span class="k">sudo</span> apt install -y nodejs npm   <span class="c"># Linux e WSL</span>
+<span class="k">node</span> --version   <span class="c"># precisa ser 18 ou mais novo; se for mais velho, instale pelo nodejs.org</span>
+<span class="k">npm</span> i -g @openai/codex
+<span class="k">codex</span> login
+<span class="k">codex</span> login status</pre></div>
+    <div class="card"><h3>Opcionais</h3><p>Um bot do Telegram (criado no @BotFather) para o canal Telegram. O Ollama com o <code>llama3.2</code>, se quiser o cérebro no seu computador. O pytest, para rodar os testes (no Ubuntu e no WSL, pelo apt; no Mac, pelo pip).</p><pre><span class="k">sudo</span> apt install -y python3-pytest   <span class="c"># Linux e WSL</span>
+<span class="k">python3</span> -m pip install --user pytest   <span class="c"># Mac</span></pre></div>
+  </div>
+</div></section>
+
+<section id="guia"><div class="wrap">
+  <span class="chip">Guia de uso · passo a passo</span>
+  <h2>Do clone ao verificador</h2>
+  <p class="sub">Os comandos são os do repositório. O curso explica cada passo com fluxo, prática e teste.</p>
+  <div class="step"><div class="b">1</div><div><h3>Baixe o kit</h3><p>Clone uma vez só; nas outras vezes, basta <code>cd ~/agente-por-pecas-kit</code>. Cada <code>git checkout aulaN</code> mostra um aviso em inglês ("detached HEAD"): é normal, pode ignorar.</p><pre><span class="k">cd</span> ~ &amp;&amp; <span class="k">git</span> clone https://github.com/inematds/agente-por-pecas-kit &amp;&amp; <span class="k">cd</span> agente-por-pecas-kit</pre></div></div>
+  <div class="step"><div class="b">2</div><div><h3>O primeiro pedido (aula 2)</h3><p>A caixa chama o Codex (modelo padrão <code>gpt-6-luna</code>). Leva uns 10 segundos. Funcionou quando aparece a linha <code>[cérebro gpt-6-luna] respondeu</code> e uma resposta. Se aparecer "o Codex não respondeu", confira o login com <code>codex login status</code>. Para testar outro modelo, ponha <code>MODELO=nome</code> antes do comando.</p><pre><span class="k">git</span> checkout aula2
+<span class="k">python3</span> canal_terminal.py <span class="s">"Em uma frase: o que é um agente de IA?"</span></pre></div></div>
+  <div class="step"><div class="b">3</div><div><h3>Chat numa página (aula 3)</h3><p>O terminal mostra <code>chat no ar: http://127.0.0.1:</code> e um número; abra esse endereço no navegador. O terminal fica ocupado com o chat; Ctrl+C (as teclas Ctrl e C juntas) desliga.</p><pre><span class="k">git</span> checkout aula3
+<span class="k">python3</span> canal_web.py</pre></div></div>
+  <div class="step"><div class="b">4</div><div><h3>Telegram (aula 4)</h3><p>Antes: no Telegram, fale com o <b>@BotFather</b>, mande <code>/newbot</code> e copie o token (a chave do bot). Grave o token no <code>.env</code> (este comando cria o arquivo). No Telegram, abra o seu bot, toque em Iniciar (isso manda <code>/start</code>, que recebe só uma boas-vindas) e mande um pedido de texto, como "oi". Então ligue o canal: com <code>--uma</code>, ele atende esse pedido e para. Funcionou quando aparecem <code>(mensagem do chat …)</code> com um número e <code>[telegram] resposta enviada</code>; guarde o número para o passo 7.</p><pre><span class="k">git</span> checkout aula4
+<span class="k">echo</span> <span class="s">"TELEGRAM_TOKEN=cole-aqui-o-token"</span> &gt; .env
+<span class="k">python3</span> canal_telegram.py --uma</pre></div></div>
+  <div class="step"><div class="b">5</div><div><h3>Pasta, sem conversa (aula 5)</h3><p>Cada arquivo <code>.txt</code> em <code>entrada/</code> é um pedido. O resultado vai para <code>feito/</code> e o pedido sai de <code>entrada/</code>. Funcionou quando aparece <code>[pasta] feito/001-frutas.txt gravado</code>.</p><pre><span class="k">git</span> checkout aula5 &amp;&amp; <span class="k">mkdir</span> -p entrada
+<span class="k">echo</span> <span class="s">"Liste 3 frutas, uma por linha."</span> &gt; entrada/001-frutas.txt
+<span class="k">python3</span> canal_pasta.py --uma-vez
+<span class="k">cat</span> feito/001-frutas.txt</pre></div></div>
+  <div class="step"><div class="b">6</div><div><h3>Receitas e ferramentas (aula 6)</h3><p>Uma receita é um arquivo de três linhas em <code>receitas/</code>. Os dois primeiros pedidos caem numa receita (<code>sem cérebro</code>); o terceiro, aberto, vai para o cérebro, que pede a ferramenta <code>ler</code>.</p><pre><span class="k">git</span> checkout aula6
+<span class="k">python3</span> canal_terminal.py <span class="s">"Adicione pão integral na lista"</span>
+<span class="k">python3</span> canal_terminal.py <span class="s">"O que tem na lista?"</span>
+<span class="k">mkdir</span> -p trabalho &amp;&amp; <span class="k">echo</span> <span class="s">"Reunião na sexta às 15h. Levar o contrato."</span> &gt; trabalho/notas.txt
+<span class="k">python3</span> canal_terminal.py <span class="s">"Leia notas.txt e diga o que tenho que levar"</span></pre></div></div>
+  <div class="step"><div class="b">7</div><div><h3>Memória e regras (aula 7)</h3><p>As travas valem em todos os canais. Para o bot do Telegram atender só você, acrescente o número do seu chat (o que apareceu no passo 4) ao <code>.env</code> com <code>&gt;&gt;</code>, que acrescenta sem apagar o token.</p><pre><span class="k">git</span> checkout aula7
+<span class="k">python3</span> canal_terminal.py <span class="s">"Lembre que meu cachorro se chama Thor"</span>
+<span class="k">python3</span> canal_terminal.py <span class="s">"Como se chama o meu cachorro?"</span>
+<span class="k">echo</span> <span class="s">"TELEGRAM_DONO=numero-do-seu-chat"</span> &gt;&gt; .env</pre></div></div>
+  <div class="step"><div class="b">8</div><div><h3>Verificador (aula 8)</h3><p>Primeiro grave um arquivo de notas na pasta <code>trabalho/</code> (a única que as ferramentas leem). Com <code>--esperado</code>, o código confere; sem ele, o juiz (o cérebro chamado de novo para julgar; troque o modelo dele com <code>MODELO_JUIZ=</code>).</p><pre><span class="k">git</span> checkout aula8 &amp;&amp; <span class="k">mkdir</span> -p trabalho
+<span class="k">echo</span> <span class="s">"Reunião com o fornecedor na sexta às 15h. Levar o contrato."</span> &gt; trabalho/notas.txt
+<span class="k">python3</span> canal_terminal.py <span class="s">"Leia notas.txt e diga a que horas é a reunião"</span> --esperado <span class="s">"15"</span></pre><p>Funcionou quando aparecem <code>[verificador] aprovado · exato: achei "15"</code> e <code>[resultado] sucesso na tentativa 1</code>.</p></div></div>
+  <div class="step"><div class="b">9</div><div><h3>Testes sem modelo</h3><p>Sete testes com um cérebro falso, na versão principal (precisa do pytest).</p><pre><span class="k">git</span> checkout main
+<span class="k">python3</span> -m pytest -q testes/</pre></div></div>
+</div></section>
+
+<section id="roadmap"><div class="wrap">
+  <span class="chip">Roadmap</span>
+  <h2>Onde o kit está</h2>
+  <p class="sub">Sem promessa de data.</p>
+  <div class="phase"><div class="tag">Feito</div><div class="d"><strong>Um agente, quatro canais</strong><span>As oito versões do curso, com saídas reais capturadas e testes sem modelo.</span></div></div>
+  <div class="phase"><div class="tag">Ideia</div><div class="d"><strong>Vários agentes</strong><span>Um agente gerente que divide o pedido entre outros agentes e confere o todo no fim.</span></div></div>
+</div></section>
+
+</div>
+
+<footer>
+  <div class="wrap">
+    <div class="pill">Python puro</div><div class="pill">Codex (assinatura)</div><div class="pill">Telegram · chat web · pasta</div>
+    <p style="margin-top:18px">agente-por-pecas-kit · kit do curso Agente por peças ·
+      <a href="https://github.com/inematds/agente-por-pecas-kit">inematds/agente-por-pecas-kit</a> ·
+      <a href="https://inematds.github.io/agente-por-pecas-v73/">curso</a> ·
+      <a href="https://inema.club">INEMA.CLUB</a></p>
+  </div>
+</footer>
+
+<script>
+  (function(){
+    var KEY='agente-por-pecas-kit-theme';
+    var b=document.body, t=document.getElementById('themeToggle');
+    if(localStorage.getItem(KEY)==='light'){ b.classList.add('light'); t.textContent='☀️'; }
+    t.addEventListener('click',function(){
+      var light=b.classList.toggle('light');
+      t.textContent=light?'☀️':'🌙';
+      localStorage.setItem(KEY, light?'light':'dark');
+    });
+  })();
+</script>
+</body>
+</html>

@@ -1,0 +1,3 @@
+quando: o que tem na lista
+faça: ler lista.txt
+responda: Na lista: {resultado}
